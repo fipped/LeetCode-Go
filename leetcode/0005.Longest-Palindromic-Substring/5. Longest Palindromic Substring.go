@@ -29,7 +29,7 @@ func longestPalindrome(s string) string {
         if RL[i] > maxLen {
         	maxLen = RL[i]
             // 偶数长度：#b#a#a# (i=4 即第3个#为中心，maxLen=2，起点为 1）
-            // 奇数长度：#b#a#a#a#（i=5，即第2个a为中心，maxLen=3，起点为 1）
+            // 奇数长度：#b#a#a#a#（i=5 即第2个a为中心，maxLen=3，起点为 1）
             start = (i - maxLen) / 2 
         }
     }
