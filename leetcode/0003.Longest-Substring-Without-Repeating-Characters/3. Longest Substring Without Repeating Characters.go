@@ -1,48 +1,41 @@
 package leetcode
 
-// 解法一 位图
+// 解法一 枚举每个位置为终点的最长无重复字母的子串长度，同时维护每个字母最后出现的位置，可更新起点为 min(起点, 上次当前字母出现位置+1）
+func lengthOfLongestSubstring2(s string) int {
+    letterPos := make(map[rune]int)
+    maxLen := 0
+    start := 0
+    for i, letter := range s {
+        if oldPos, ok := letterPos[letter]; ok {
+            if oldPos + 1 > start {
+                start = oldPos + 1
+            }
+        }
+        length := i - start + 1
+        if length > maxLen {
+            maxLen = length
+        }
+        letterPos[letter] = i
+    }
+    return maxLen
+}
+
+// 解法二 滑动窗口
 func lengthOfLongestSubstring(s string) int {
 	if len(s) == 0 {
 		return 0
 	}
-	var bitSet [256]bool
+	var exist [256]bool
 	result, left, right := 0, 0, 0
-	for left < len(s) {
-		// 右侧字符对应的bitSet被标记true，说明此字符在X位置重复，需要左侧向前移动，直到将X标记为false
-		if bitSet[s[right]] {
-			bitSet[s[left]] = false
-			left++
-		} else {
-			bitSet[s[right]] = true
-			right++
-		}
-		if result < right-left {
-			result = right - left
-		}
-		if left+result >= len(s) || right >= len(s) {
-			break
-		}
-	}
-	return result
-}
-
-// 解法二 滑动窗口
-func lengthOfLongestSubstring_(s string) int {
-	if len(s) == 0 {
-		return 0
-	}
-	var freq [256]int
-	result, left, right := 0, 0, -1
-
-	for left < len(s) {
-		if right+1 < len(s) && freq[s[right+1]-'a'] == 0 {
-			freq[s[right+1]-'a']++
+	for left < len(s) && right < len(s) {
+		if !exist[s[right]] {
+			exist[s[right]] = true
 			right++
 		} else {
-			freq[s[left]-'a']--
+			exist[s[left]] = false
 			left++
 		}
-		result = max(result, right-left+1)
+		result = max(result, right-left)
 	}
 	return result
 }
